@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define MyWpfApplication_TargetDir=$(var.MyWpfApplication.TargetDir)?>
+  <Product Id="17a4f85a-1219-4143-a0d6-e9ebc6084064" Name="My Wpf Application" Language="1033" Version="1.0.0.0" Manufacturer="Mesta-Automation.com" UpgradeCode="3936e1bc-c06c-45ae-b1db-430cf31dd48b">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <Icon Id="icon.ico" SourceFile="$(var.ProjectDir)Icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+    <WixVariable Id="WixUIBannerBmp" Value="Images\installer_top-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Images\installer_background.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <UIRef Id="WixUI_InstallDir" />
+
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="My Wpf Application" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+      <ComponentGroupRef Id="Files_files" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="MyWpfApplication">
+          <Directory Id="Files" Name="Files" />
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="MyWpfApplication" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="9bd13330-6540-406f-a3a8-d7f7c69ae7f9">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="MyWpfApplication" Description="MyWpfApplication" Target="[INSTALLFOLDER]MyWpfApplication.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="cde1e030-eb64-49a5-b7b8-400b379c2d1a">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="MyWpfApplication" Description="MyWpfApplication" Target="[INSTALLFOLDER]MyWpfApplication.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+      <!-- <Component Id="ProductComponent"> -->
+      <!-- TODO: Insert files, registry keys, and other resources here. -->
+      <!-- </Component> -->
+      <Component Id="MyWpfApplication.exe" Guid="0f9a1acd-803f-4ecb-a283-7537a05a5eb1">
+        <File Id="MyWpfApplication.exe" Name="MyWpfApplication.exe" Source="$(var.MyWpfApplication_TargetDir)MyWpfApplication.exe" />
+      </Component>
+      <Component Id="MyWpfApplication.exe.config" Guid="749595ae-e1ec-4afa-93ef-3a9ae3b938f7">
+        <File Id="MyWpfApplication.exe.config" Name="MyWpfApplication.exe.config" Source="$(var.MyWpfApplication_TargetDir)MyWpfApplication.exe.config" />
+      </Component>
+      <Component Id="MyWpfDependency.dll" Guid="45361aba-e09e-415b-8a2e-057b77ba41b9">
+        <File Id="MyWpfDependency.dll" Name="MyWpfDependency.dll" Source="$(var.MyWpfApplication_TargetDir)MyWpfDependency.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="Files_files" Directory="Files">
+      <Component Id="Files_TextFile1.txt" Guid="aea868c1-2d18-400d-88fa-e506b16ef130">
+        <File Id="Files_TextFile1.txt" Name="TextFile1.txt" Source="$(var.MyWpfApplication_TargetDir)Files\TextFile1.txt" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
